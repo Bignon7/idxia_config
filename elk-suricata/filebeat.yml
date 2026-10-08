@@ -1,0 +1,21 @@
+filebeat.inputs:
+  - type: filestream
+    id: suricata-eve
+    enabled: true
+    paths:
+      - /var/log/suricata/eve.json
+    parsers:
+      - ndjson:
+          target: ""
+          overwrite_keys: true
+          add_error_key: true
+
+output.elasticsearch:
+  hosts: ["elasticsearch:9200"]
+  index: "suricata-%{+yyyy.MM.dd}"
+
+setup.template.name: "suricata"
+setup.template.pattern: "suricata-*"
+setup.ilm.enabled: false
+
+logging.level: info

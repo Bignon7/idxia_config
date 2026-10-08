@@ -1,0 +1,57 @@
+services:
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.13.4
+    container_name: idxia-elasticsearch
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+    ports:
+      - "9200:9200"
+    volumes:
+      - es-data:/usr/share/elasticsearch/data
+    restart: unless-stopped
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.13.4
+    container_name: idxia-kibana
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    ports:
+      - "5601:5601"
+    depends_on:
+      - elasticsearch
+    restart: unless-stopped
+
+  # IMPORTANT : network_mode "host" pour voir le trafic sur l'interface
+  # loopback (lo) de la machine, la ou tournent demo-webapp et
+  # attacker-simulator. Fonctionne sur Linux (Ubuntu) uniquement.
+  suricata:
+    image: jasonish/suricata:latest
+    container_name: idxia-suricata
+    network_mode: host
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+      - SYS_NICE
+    volumes:
+      - suricata-logs:/var/log/suricata
+    command: ["-i", "lo"]
+    restart: unless-stopped
+
+  filebeat:
+    image: docker.elastic.co/beats/filebeat:8.13.4
+    container_name: idxia-filebeat
+    user: root
+    volumes:
+      - ./filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
+      - suricata-logs:/var/log/suricata:ro
+    command: ["--strict.perms=false", "-e"]
+    depends_on:
+      - elasticsearch
+      - suricata
+    restart: unless-stopped
+
+volumes:
+  es-data:
+  suricata-logs:
