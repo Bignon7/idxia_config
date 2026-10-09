@@ -1,0 +1,6 @@
+[submodule "model"]
+	path = model
+	url = https://github.com/Bignon7/idxia_model
+[submodule "backend"]
+	path = backend
+	url = https://github.com/Bignon7/idxia_back
