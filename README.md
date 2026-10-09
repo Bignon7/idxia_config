@@ -28,7 +28,7 @@ IDXIA détecte les abus d'authentification (brute-force, credential stuffing) à
 | `attacker-simulator/` | Script de credential stuffing contre l'application de démonstration |
 | `feature-aggregator/` | Transforme les logs de connexion en variables de session et interroge l'API |
 | `elk-suricata/` | Docker Compose : Elasticsearch, Kibana, Suricata, Filebeat (voir `elk-suricata/README.md`) |
-| `cic_validation/` | Validation sur CIC-IDS2017, piste d'approfondissement en pause |
+| `cic-validation/` | Validation sur CIC-IDS2017, piste d'approfondissement en pause |
 | `run_demo.sh` / `stop_demo.sh` | Lancement et arrêt orchestrés de la démonstration |
 | `logs/` | Journaux des services lancés par `run_demo.sh` (généré) |
 
